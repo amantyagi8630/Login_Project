@@ -5,29 +5,31 @@ import 'package:get_storage/get_storage.dart';
 import 'Sign_Up_Page.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
   final box = GetStorage();
   var userController = Get.put(UserController());
 
-  @override
-  void initState() {
-    super.initState();
-    userController = Get.find<UserController>();
+  void updateRegisteredUsersList(List<Map<String, String>> updatedList) {
+    // Update the registered users list here
+    box.write('registered_users', updatedList);
+    userController.registeredUsers.value = updatedList;
   }
 
-  Future<void> logOut(BuildContext context) async {
-    Get.offNamed('/a');
+  void deleteAccount(Map<String, String> userData) {
+    List<Map<String, String>> updatedList = List<Map<String, String>>.from(userController.registeredUsers);
+    updatedList.remove(userData);
+    updateRegisteredUsersList(updatedList);
   }
 
-  Future<void> clearCredentials(BuildContext context,
-      {required bool deleteAccount}) async {
-    final String currentUserEmail = box.read('email');
+
+  void clearCredentials(BuildContext context, {required bool deleteAccount}) async {
+    final String currentUserEmail = box.read('email') ?? '';
     final List<Map<String, String>> registeredUsersData =
     List<Map<String, String>>.from(box.read<List>('registered_users') ?? []);
 
@@ -38,15 +40,173 @@ class _DashboardState extends State<Dashboard> {
           .where((user) => user['email'] != currentUserEmail)
           .toList();
       box.write('registered_users', updatedRegisteredUsers);
-      final updatedUserList = userController.registeredUsers.value
-          .where((user) => user['email'] != currentUserEmail)
-          .toList();
-      userController.registeredUsers.value = updatedUserList;
+      userController.registeredUsers.value = updatedRegisteredUsers;
     }
     print(userController.registeredUsers);
     Get.offAllNamed('/a');
   }
 
+  @override
+  void initState() {
+    super.initState();
+    userController = Get.find<UserController>();
+    loadRegisteredUsers();
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    Get.offNamed('/a');
+  }
+
+  void showDeleteConfirmationDialog(
+      Function(Map<String, String> userData) deleteFunction,
+      Map<String, String> userData,
+      ) {
+    String enteredPassword = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: TextField(
+            obscureText: true,
+            onChanged: (value) {
+              enteredPassword = value;
+            },
+            decoration: const InputDecoration(
+              hintText: 'Enter your password',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                if (enteredPassword == userData['password']) {
+                  deleteFunction(userData);
+                  Get.back();
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Incorrect Password'),
+                        content: const Text('Please enter the correct password.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showRegisteredUsersDialog(BuildContext context) {
+    String currentEmail = box.read('email') ?? '';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF0C187A),
+                      Color(0xFF030F56),
+                      Color(0xFF019CDF),
+                    ],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  ),
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 5,
+                  ),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                height: 300, // Set a fixed height for the container
+                child: ListView.builder(
+                  itemCount: userController.registeredUsers.length,
+                  itemBuilder: (context, index) {
+                    final user = userController.registeredUsers[index];
+                    if (user['email'] != currentEmail) {
+                      return ListTile(
+                        title: Text(
+                          user['name'] ?? 'No Name',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontFamily: 'Roboto-Black',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        subtitle: Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceBetween, // Adjust the alignment as needed
+                            children: [
+                              Text(
+                                user['email'] ?? 'No Email',
+                                style: const TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto-Black',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 27,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDeleteConfirmationDialog(
+                                        (userData) {
+                                          deleteAccount(userData);
+                                          Get.back();
+                                      setState(() {
+                                        userController.registeredUsers
+                                            .remove(userData);
+                                      });
+                                    },
+                                    userController.registeredUsers[index],
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(); // return an empty container if it's the current user
+                    }
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +242,6 @@ class _DashboardState extends State<Dashboard> {
                   fontFamily: 'Roboto-Black',
                   fontWeight: FontWeight.w900,
                 ),
-
               ),
             ],
           ),
@@ -92,14 +251,15 @@ class _DashboardState extends State<Dashboard> {
             icon: const CircleAvatar(
               backgroundImage: AssetImage('Images/rocket-launch.png'),
             ),
-            onPressed: () {},
+            onPressed: () {
+              showRegisteredUsersDialog(context);
+            },
           ),
         ],
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       drawer: Drawer(
-
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -114,7 +274,6 @@ class _DashboardState extends State<Dashboard> {
           ),
           child: Column(
             children: [
-
               UserAccountsDrawerHeader(
                 accountName: Text(
                   box.read('name') ?? 'Your Name',
@@ -205,13 +364,20 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-void loadRegisteredUsers() {
-  final registeredUsersData = box.read<List>('registered_users');
-  if (registeredUsersData != null) {
-    print('Registered users data: $registeredUsersData');
-    userController.registeredUsers.value = List<Map<String, String>>.from(
-      registeredUsersData.map((item) => Map<String, String>.from(item)),
-    );
+
+  void loadRegisteredUsers() {
+    final registeredUsersData = box.read<List>('registered_users');
+    if (registeredUsersData != null) {
+      List<Map<String, String>> registeredUsers = [];
+      for (var item in registeredUsersData) {
+        Map<String, String> userMap = {};
+        item.forEach((key, value) {
+          userMap[key] = value.toString();
+        });
+        registeredUsers.add(userMap);
+      }
+      print('Registered users data: $registeredUsers');
+      userController.registeredUsers.value = registeredUsers;
+    }
   }
-}
 }
