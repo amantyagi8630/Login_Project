@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'controller/user_controller.dart';
 
-class UserController extends GetxController {
-  var registeredUsers = <Map<String, String>>[].obs;
-
-  void addUser(Map<String, String> user) {
-    registeredUsers.add(user);
-  }
-}
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -323,7 +317,7 @@ class _SignUpState extends State<SignUp> {
                                     });
                                     saveRegisteredUsers();
                                     saveUserDetails(name, email, password);
-                                    // Get.offAllNamed('/c');
+                                    Get.offAllNamed('/c');
                                     print(userController.registeredUsers);
                                     Get.snackbar(
                                       '',

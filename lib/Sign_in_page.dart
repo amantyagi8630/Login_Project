@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-import 'Sign_Up_Page.dart';
+import 'controller/user_controller.dart';
 
 class SignIn extends StatefulWidget {
+  const SignIn({super.key});
+
   @override
   _SignInState createState() => _SignInState();
 }
@@ -26,6 +27,7 @@ class _SignInState extends State<SignIn> {
     super.initState();
     userController = Get.find<UserController>();
     loadRegisteredUsers();
+
   }
 
   @override
@@ -51,7 +53,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Get.back();
+            Get.offAllNamed('/a');
           },
           icon: const Icon(Icons.arrow_back_ios_new),
         ),
@@ -198,6 +200,8 @@ class _SignInState extends State<SignIn> {
 
                             if (isAuthenticated) {
                               Get.offAllNamed('/d');
+                              userController.isLoggedIn = true;
+                              box.write('isLoggedIn', userController.isLoggedIn);
                               Get.snackbar(
                                 '',
                                 '',
@@ -230,7 +234,6 @@ class _SignInState extends State<SignIn> {
                                 ),
                               );
                             } else {
-                              print(userController.registeredUsers);
                               Get.snackbar(
                                 '',
                                 '',
@@ -328,10 +331,8 @@ class _SignInState extends State<SignIn> {
           registeredUserName = storedName ?? "";
         });
 
-        // Store the user's data in GetStorage
         box.write('name', registeredUserName);
         box.write('email', email);
-        // You can add more data if needed
 
         return true;
       }

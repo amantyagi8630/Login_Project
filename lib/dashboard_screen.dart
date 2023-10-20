@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-import 'Sign_Up_Page.dart';
+import 'controller/user_controller.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -42,7 +41,6 @@ class _DashboardState extends State<Dashboard> {
       box.write('registered_users', updatedRegisteredUsers);
       userController.registeredUsers.value = updatedRegisteredUsers;
     }
-    print(userController.registeredUsers);
     Get.offAllNamed('/a');
   }
 
@@ -139,7 +137,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                height: 300, // Set a fixed height for the container
+                height: 300,
                 child: ListView.builder(
                   itemCount: userController.registeredUsers.length,
                   itemBuilder: (context, index) {
@@ -322,6 +320,8 @@ class _DashboardState extends State<Dashboard> {
                       color: Colors.green),
                 ),
                 onTap: () {
+                  userController.isLoggedIn = false;
+                  box.write('isLoggedIn', userController.isLoggedIn);
                   logOut(context);
                 },
               ),
@@ -339,6 +339,8 @@ class _DashboardState extends State<Dashboard> {
                       color: Colors.red),
                 ),
                 onTap: () {
+                  userController.isLoggedIn = false;
+                  box.write('isLoggedIn', userController.isLoggedIn);
                   clearCredentials(context, deleteAccount: true);
                 },
               ),
