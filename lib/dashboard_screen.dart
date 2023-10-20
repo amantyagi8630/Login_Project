@@ -15,22 +15,23 @@ class _DashboardState extends State<Dashboard> {
   var userController = Get.put(UserController());
 
   void updateRegisteredUsersList(List<Map<String, String>> updatedList) {
-    // Update the registered users list here
     box.write('registered_users', updatedList);
     userController.registeredUsers.value = updatedList;
   }
 
   void deleteAccount(Map<String, String> userData) {
-    List<Map<String, String>> updatedList = List<Map<String, String>>.from(userController.registeredUsers);
+    List<Map<String, String>> updatedList =
+        List<Map<String, String>>.from(userController.registeredUsers);
     updatedList.remove(userData);
     updateRegisteredUsersList(updatedList);
   }
 
-
-  void clearCredentials(BuildContext context, {required bool deleteAccount}) async {
+  void clearCredentials(BuildContext context,
+      {required bool deleteAccount}) async {
     final String currentUserEmail = box.read('email') ?? '';
     final List<Map<String, String>> registeredUsersData =
-    List<Map<String, String>>.from(box.read<List>('registered_users') ?? []);
+        List<Map<String, String>>.from(
+            box.read<List>('registered_users') ?? []);
 
     if (deleteAccount) {
       box.remove('name');
@@ -56,57 +57,113 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void showDeleteConfirmationDialog(
-      Function(Map<String, String> userData) deleteFunction,
-      Map<String, String> userData,
-      ) {
+    Function(Map<String, String> userData) deleteFunction,
+    Map<String, String> userData,
+  ) {
     String enteredPassword = '';
-
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: TextField(
-            obscureText: true,
-            onChanged: (value) {
-              enteredPassword = value;
-            },
-            decoration: const InputDecoration(
-              hintText: 'Enter your password',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                if (enteredPassword == userData['password']) {
-                  deleteFunction(userData);
-                  Get.back();
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Incorrect Password'),
-                        content: const Text('Please enter the correct password.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('OK'),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF0C187A),
+                        Color(0xFF030F56),
+                        Color(0xFF019CDF),
+                      ],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                    ),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  height: 250,
+                  width: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 50,),
+                        const Text(
+                          'Confirm Deletion',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
                           ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
+                        ),
+                        TextField(
+                          obscureText: true,
+                          onChanged: (value) {
+                            enteredPassword = value;
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Enter your password',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                //title: const Text(''),
+                // content: Container(
+                //   decoration: BoxDecoration(
+                //     color: Colors.black,
+                //   ),
+                // ),
+                // content: TextField(
+                //   obscureText: true,
+                //   onChanged: (value) {
+                //     enteredPassword = value;
+                //   },
+                //   decoration: const InputDecoration(
+                //     hintText: 'Enter your password',
+                //   ),
+                // ),
+                // actions: <Widget>[
+                //   TextButton(
+                //     onPressed: () {
+                //       if (enteredPassword == userData['password']) {
+                //         deleteFunction(userData);
+                //         Get.back();
+                //       } else {
+                //         showDialog(
+                //           context: context,
+                //           builder: (BuildContext context) {
+                //             return AlertDialog(
+                //               title: const Text('Incorrect Password'),
+                //               content: const Text(
+                //                   'Please enter the correct password.'),
+                //               actions: <Widget>[
+                //                 TextButton(
+                //                   onPressed: () {
+                //                     Navigator.of(context).pop();
+                //                   },
+                //                   child: const Text('OK'),
+                //                 ),
+                //               ],
+                //             );
+                //           },
+                //         );
+                //       }
+                //     },
+                //     child: const Text('Delete'),
+                //   ),
+                // ],
+              );
+            },
+          );
+        });
   }
 
   void showRegisteredUsersDialog(BuildContext context) {
@@ -173,9 +230,9 @@ class _DashboardState extends State<Dashboard> {
                               IconButton(
                                 onPressed: () {
                                   showDeleteConfirmationDialog(
-                                        (userData) {
-                                          deleteAccount(userData);
-                                          Get.back();
+                                    (userData) {
+                                      deleteAccount(userData);
+                                      Get.back();
                                       setState(() {
                                         userController.registeredUsers
                                             .remove(userData);
