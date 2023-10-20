@@ -90,11 +90,14 @@ class _DashboardState extends State<Dashboard> {
                   height: 250,
                   width: 200,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 15),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 50,),
+                        const SizedBox(
+                          height: 50,
+                        ),
                         const Text(
                           'Confirm Deletion',
                           style: TextStyle(
@@ -103,63 +106,124 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                         TextField(
-                          obscureText: true,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                            decorationThickness: 0,
+                          ),
+                          obscureText: false,
                           onChanged: (value) {
                             enteredPassword = value;
                           },
                           decoration: const InputDecoration(
                             hintText: 'Enter your password',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                  elevation: const MaterialStatePropertyAll(5),
+                                  side: MaterialStateProperty.resolveWith<
+                                      BorderSide>(
+                                    (Set<MaterialState> states) {
+                                      return const BorderSide(
+                                          color: Colors.blue, width: 2);
+                                    },
+                                  ),
+                                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
+                                        (Set<MaterialState> states) {
+                                      return RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      );
+                                    },
+                                  ),
+                                ),
+
+                                onPressed: () {
+                                  if (enteredPassword == userData['password']) {
+                                    deleteFunction(userData);
+                                    Navigator.of(context).pop();
+                                    Get.snackbar(
+                                      '',
+                                      '',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.red,
+                                      borderRadius: 50.0,
+                                      margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                      duration: const Duration(seconds: 3),
+                                      padding: const EdgeInsets.only(bottom: 25),
+                                      isDismissible: true,
+                                      dismissDirection: DismissDirection.horizontal,
+                                      forwardAnimationCurve: Curves.easeOutBack,
+                                      reverseAnimationCurve: Curves.easeInBack,
+                                      messageText: const Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Account removed',
+                                            style: TextStyle(
+                                              fontFamily: "Roboto-Black",
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                              letterSpacing: 0.8,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    Get.snackbar(
+                                      '',
+                                      '',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.red,
+                                      borderRadius: 50.0,
+                                      margin: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                      duration: const Duration(seconds: 3),
+                                      padding: const EdgeInsets.only(bottom: 25),
+                                      isDismissible: true,
+                                      dismissDirection: DismissDirection.horizontal,
+                                      forwardAnimationCurve: Curves.easeOutBack,
+                                      reverseAnimationCurve: Curves.easeInBack,
+                                      messageText: const Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Please enter correct password',
+                                            style: TextStyle(
+                                              fontFamily: "Roboto-Black",
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                              letterSpacing: 0.8,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(fontSize: 18),
+                                )),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ),
-                //title: const Text(''),
-                // content: Container(
-                //   decoration: BoxDecoration(
-                //     color: Colors.black,
-                //   ),
-                // ),
-                // content: TextField(
-                //   obscureText: true,
-                //   onChanged: (value) {
-                //     enteredPassword = value;
-                //   },
-                //   decoration: const InputDecoration(
-                //     hintText: 'Enter your password',
-                //   ),
-                // ),
-                // actions: <Widget>[
-                //   TextButton(
-                //     onPressed: () {
-                //       if (enteredPassword == userData['password']) {
-                //         deleteFunction(userData);
-                //         Get.back();
-                //       } else {
-                //         showDialog(
-                //           context: context,
-                //           builder: (BuildContext context) {
-                //             return AlertDialog(
-                //               title: const Text('Incorrect Password'),
-                //               content: const Text(
-                //                   'Please enter the correct password.'),
-                //               actions: <Widget>[
-                //                 TextButton(
-                //                   onPressed: () {
-                //                     Navigator.of(context).pop();
-                //                   },
-                //                   child: const Text('OK'),
-                //                 ),
-                //               ],
-                //             );
-                //           },
-                //         );
-                //       }
-                //     },
-                //     child: const Text('Delete'),
-                //   ),
-                // ],
               );
             },
           );
