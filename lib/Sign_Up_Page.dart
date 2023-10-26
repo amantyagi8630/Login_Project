@@ -56,8 +56,7 @@ class _SignUpState extends State<SignUp> {
       borderRadius: BorderRadius.circular(25),
     );
 
-    return MaterialApp(
-      home: Scaffold(
+      return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
@@ -441,8 +440,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   bool isEmailRegistered(String email) {

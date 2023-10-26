@@ -315,7 +315,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       );
                     } else {
-                      return Container(); // return an empty container if it's the current user
+                      return Container();
                     }
                   },
                 ),
