@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:login_project/custom_widgets/custom_app_background/app_background.dart';
+import 'package:login_project/custom_widgets/custom_button_widgets/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,22 +33,10 @@ class HomeScreen extends StatelessWidget {
             extendBodyBehindAppBar: true,
             body: SingleChildScrollView(
               child: Center(
-                child: Container(
-                  height: screenHeight,
-                  width: double.infinity,
-                  // width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF0C187A),
-                        Color(0xFF030F56),
-                        Color(0xFF019CDF)
-                      ],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                    ),
-                  ),
-                  child: Column(
+                child: AppBackground(
+                  conHeight: screenHeight,
+                  conWidth: double.infinity,
+                  widget: Column(
                     children: [
                       Center(
                         child: Column(
@@ -70,52 +60,20 @@ class HomeScreen extends StatelessWidget {
                             const SizedBox(
                               height: 50,
                             ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue.shade900,
-                                elevation: 10,
-                                minimumSize: const Size(370, 30),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                              ),
-                              onPressed: () {
+                            CustomElevatedButton(
+                              btnName: 'Sign Up',
+                              bgColor: Colors.blue.shade900,
+                              callback: () {
                                 Get.toNamed('/b');
                               },
-                              child: const Text(
-                                'Sign Up',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontFamily: 'Roboto-Black',
-                                    fontWeight: FontWeight.w700),
-                              ),
                             ),
                             const SizedBox(height: 20),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red.shade500,
-                                elevation: 10,
-                                minimumSize: const Size(370, 30),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(35),
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                              ),
-                              onPressed: () {
+                            CustomElevatedButton(
+                              btnName: 'Login',
+                              bgColor: Colors.red.shade500,
+                              callback: () {
                                 Get.toNamed('/c');
                               },
-                              child: const Text(
-                                'Login',
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontFamily: 'Roboto-Black',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white),
-                              ),
                             ),
                           ],
                         ),

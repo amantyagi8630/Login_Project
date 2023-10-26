@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:login_project/custom_widgets/custom_app_background/app_background.dart';
 import 'controller/user_controller.dart';
 
 
@@ -69,21 +70,10 @@ class _SignUpState extends State<SignUp> {
         ),
         extendBodyBehindAppBar: true,
         body: Center(
-          child: Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF0C187A),
-                  Color(0xFF030F56),
-                  Color(0xFF019CDF)
-                ],
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-              ),
-            ),
-            child: Center(
+          child: AppBackground(
+            conHeight: double.infinity,
+            conWidth: double.infinity,
+            widget: Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Form(

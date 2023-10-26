@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:login_project/custom_widgets/custom_app_background/app_background.dart';
 import 'controller/user_controller.dart';
 
 class SignIn extends StatefulWidget {
@@ -62,17 +63,10 @@ class _SignInState extends State<SignIn> {
       ),
       extendBodyBehindAppBar: true,
       body: Center(
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF0C187A), Color(0xFF030F56), Color(0xFF019CDF)],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            ),
-          ),
-          child: Container(
+        child: AppBackground(
+          conHeight: double.infinity,
+          conWidth: double.infinity,
+          widget: Container(
             decoration: const BoxDecoration(),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -340,11 +334,9 @@ class _SignInState extends State<SignIn> {
     return false;
   }
 
-
   void loadRegisteredUsers() {
     final registeredUsersData = box.read<List>('registered_users');
     if (registeredUsersData != null) {
-      print('Registered users data: $registeredUsersData');
       userController.registeredUsers.value = List<Map<String, String>>.from(
         registeredUsersData.map((item) => Map<String, String>.from(item)),
       );

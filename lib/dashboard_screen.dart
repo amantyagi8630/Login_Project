@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:login_project/custom_widgets/custom_app_background/app_background.dart';
 import 'controller/user_controller.dart';
 
 class Dashboard extends StatefulWidget {
@@ -71,6 +72,8 @@ class _DashboardState extends State<Dashboard> {
                   borderRadius: BorderRadius.circular(30.0),
                 ),
                 child: Container(
+                  height: 250,
+                  width: 200,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
@@ -87,8 +90,6 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  height: 250,
-                  width: 200,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 15),
@@ -379,19 +380,10 @@ class _DashboardState extends State<Dashboard> {
         elevation: 0,
       ),
       drawer: Drawer(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF0C187A),
-                Color(0xFF030F56),
-                Color(0xFF019CDF),
-              ],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            ),
-          ),
-          child: Column(
+        child: AppBackground(
+          conWidth: double.infinity,
+          conHeight: double.infinity,
+          widget: Column(
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text(
@@ -470,20 +462,10 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       extendBodyBehindAppBar: true,
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF0C187A),
-              Color(0xFF030F56),
-              Color(0xFF019CDF),
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+      body:  AppBackground(
+        conHeight: double.infinity,
+        conWidth: double.infinity,
+        widget: null,
       ),
     );
   }
@@ -499,7 +481,6 @@ class _DashboardState extends State<Dashboard> {
         });
         registeredUsers.add(userMap);
       }
-      print('Registered users data: $registeredUsers');
       userController.registeredUsers.value = registeredUsers;
     }
   }
