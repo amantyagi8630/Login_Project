@@ -6,7 +6,6 @@ import 'package:login_project/Sign_Up_Page.dart';
 import 'package:login_project/Splash_Screen.dart';
 import 'package:login_project/dashboard_screen.dart';
 import 'package:login_project/home_screen.dart';
-
 import 'Sign_in_page.dart';
 
 void main() async{
